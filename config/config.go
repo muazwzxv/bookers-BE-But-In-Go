@@ -1,20 +1,10 @@
 package config
 
 import (
-	"errors"
 	"log"
-	"strconv"
 
 	"github.com/spf13/viper"
 )
-
-type DatabaseConfig struct {
-	User     string
-	Password string
-	Host     string
-	Port     int
-	DBName   string
-}
 
 func readEnv(key string) string {
 	viper.SetConfigFile(".env")
@@ -30,21 +20,4 @@ func readEnv(key string) string {
 	}
 
 	return value
-}
-
-func DBConfig() (DatabaseConfig, error) {
-	port, err := strconv.Atoi(readEnv("DBPORT"))
-	if err != nil {
-		return DatabaseConfig{}, errors.New("Error converting string to int")
-	}
-
-	config := DatabaseConfig{
-		User:     readEnv("DBUSER"),
-		Password: readEnv("DBPASSWORD"),
-		Host:     readEnv("DBHOST"),
-		DBName:   readEnv("DBNAME"),
-		Port:     port,
-	}
-
-	return config, nil
 }

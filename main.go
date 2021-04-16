@@ -1,12 +1,9 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/muazwzxv/bookers/m/config"
 )
 
 func main() {
@@ -14,9 +11,6 @@ func main() {
 
 	app.Use(logger.New())
 	app.Use(cors.New())
-
-	db, _ := config.DBConfig()
-	fmt.Println(db)
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
