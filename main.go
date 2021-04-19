@@ -12,7 +12,7 @@ import (
 func main() {
 	app := fiber.New()
 	if _, err := service.DB.Connect(); err != nil {
-		log.Fatal("Error ")
+		log.Fatal("Error ", err)
 	}
 
 	app.Use(logger.New())
