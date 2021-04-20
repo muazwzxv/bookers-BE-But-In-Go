@@ -19,4 +19,5 @@ type User struct {
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 
 	Listing []Listing
+	Comment []Comment
 }
