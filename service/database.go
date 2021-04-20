@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/muazwzxv/bookers/m/config"
+	"github.com/muazwzxv/bookers/m/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -37,7 +38,11 @@ func (orm *Database) Connect() (*gorm.DB, error) {
 	if orm.DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{}); err != nil {
 		return nil, err
 	} else {
-		orm.DB.Debug().AutoMigrate()
+		// Migrate all tables
+		orm.DB.Debug().AutoMigrate(
+			&model.User{},
+		)
+
 		return orm.DB, nil
 	}
 }
