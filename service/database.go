@@ -41,6 +41,7 @@ func (orm *Database) Connect() (*gorm.DB, error) {
 		// Migrate all tables
 		orm.DB.Debug().AutoMigrate(
 			&model.User{},
+			&model.Category{},
 		)
 
 		return orm.DB, nil
