@@ -21,3 +21,11 @@ type User struct {
 	Listing []Listing
 	Comment []Comment
 }
+
+func CreateUser(db *gorm.DB, user *User) (*User, error) {
+	err := db.Debug().Create(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}

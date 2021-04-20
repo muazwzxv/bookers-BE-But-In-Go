@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/muazwzxv/bookers/m/controller"
 	"github.com/muazwzxv/bookers/m/service"
 )
 
@@ -29,4 +30,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func setupRouter() *fiber.App {
+	app := fiber.New()
+
+	userRepository := controller.New()
+	app.Post("/users", userRepository.Create)
+
+	return app
 }
