@@ -42,6 +42,8 @@ func (orm *Database) Connect() (*gorm.DB, error) {
 		orm.DB.Debug().AutoMigrate(
 			&model.User{},
 			&model.Category{},
+			&model.Topic{},
+			&model.Listing{},
 		)
 
 		return orm.DB, nil

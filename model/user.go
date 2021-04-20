@@ -7,12 +7,16 @@ import (
 )
 
 type User struct {
-	ID        uint64 `gorm:"primary_key;auto_increment"`
-	Name      string `gorm:"not null"`
-	Email     string
-	Role      string
-	Password  string
+	gorm.Model
+	ID       uint64 `gorm:"primary_key;auto_increment"`
+	Name     string `gorm:"not null"`
+	Email    string
+	Role     string
+	Password string
+
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
+
+	Listing []Listing
 }
