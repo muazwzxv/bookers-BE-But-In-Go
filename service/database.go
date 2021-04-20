@@ -44,7 +44,7 @@ func (orm *Database) Connect() (*gorm.DB, error) {
 			&model.Category{},
 			&model.Topic{},
 			&model.Listing{},
-			&model.Listing{},
+			&model.Comment{},
 		)
 
 		return orm.DB, nil
