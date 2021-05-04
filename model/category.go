@@ -17,3 +17,10 @@ type Category struct {
 
 	Topic []Topic
 }
+
+func CreateCategory(db *gorm.DB, category *Category) error {
+	if err := db.Debug().Create(&category).Error; err != nil {
+		return err
+	}
+	return nil
+}

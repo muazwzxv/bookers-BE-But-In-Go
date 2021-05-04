@@ -22,10 +22,9 @@ type User struct {
 	Comment []Comment
 }
 
-func CreateUser(db *gorm.DB, user *User) (*User, error) {
-	err := db.Debug().Create(&user).Error
-	if err != nil {
-		return nil, err
+func CreateUser(db *gorm.DB, user *User) error {
+	if err := db.Debug().Create(&user).Error; err != nil {
+		return err
 	}
-	return user, nil
+	return nil
 }

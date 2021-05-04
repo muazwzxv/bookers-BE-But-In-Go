@@ -28,17 +28,16 @@ func (userRepo *UserRepository) Create(ctx *fiber.Ctx) error {
 		})
 	}
 
-	created, err := model.CreateUser(userRepo.gorm, &user)
-	if err != nil {
+	if err := model.CreateUser(userRepo.gorm, &user); err != nil {
 		return ctx.Status(http.StatusConflict).JSON(fiber.Map{
 			"Success": false,
 			"Message": "Cannot create user",
 		})
+	} else {
+		return ctx.Status(http.StatusCreated).JSON(fiber.Map{
+			"Success": true,
+			"Message": "User Created",
+			"User":    user,
+		})
 	}
-
-	return ctx.Status(http.StatusCreated).JSON(fiber.Map{
-		"Success": true,
-		"Message": "User Created",
-		"User":    created,
-	})
 }

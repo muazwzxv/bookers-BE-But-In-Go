@@ -31,12 +31,19 @@ func (categoryRepo *CategoryRepository) Create(ctx *fiber.Ctx) error {
 		})
 	}
 
-	// Response for created
-	return ctx.Status(http.StatusCreated).JSON(fiber.Map{
-		"Success":  true,
-		"Message":  "Category Created",
-		"Category": category,
-	})
+	if err := model.CreateCategory(categoryRepo.gorm, &category); err != nil {
+		return ctx.Status(http.StatusConflict).JSON(fiber.Map{
+			"Success": false,
+			"Message": "Cannot create user",
+		})
+	} else {
+		// Response for created
+		return ctx.Status(http.StatusCreated).JSON(fiber.Map{
+			"Success":  true,
+			"Message":  "Category Created",
+			"Category": category,
+		})
+	}
 }
 
 func (categoryRepo *CategoryRepository) Test(ctx *fiber.Ctx) error {

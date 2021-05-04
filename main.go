@@ -12,11 +12,13 @@ import (
 
 func main() {
 	//app := fiber.New()
-	app := setupRouter()
+
+	// Connect Database
 	if _, err := service.DB.Connect(); err != nil {
 		log.Fatal("Error ", err)
 	}
 
+	app := setupRouter()
 	app.Use(logger.New())
 	app.Use(cors.New())
 
@@ -41,7 +43,7 @@ func setupRouter() *fiber.App {
 
 	categoryRepository := controller.NewCategoryRepository()
 	app.Get("/test", categoryRepository.Test)
-	app.Get("/category", categoryRepository.Create)
+	app.Post("/category", categoryRepository.Create)
 
 	return app
 }
