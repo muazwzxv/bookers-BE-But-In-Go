@@ -11,7 +11,8 @@ import (
 )
 
 func main() {
-	app := fiber.New()
+	//app := fiber.New()
+	app := setupRouter()
 	if _, err := service.DB.Connect(); err != nil {
 		log.Fatal("Error ", err)
 	}
@@ -35,8 +36,11 @@ func main() {
 func setupRouter() *fiber.App {
 	app := fiber.New()
 
-	userRepository := controller.New()
+	userRepository := controller.NewUserRepository()
 	app.Post("/users", userRepository.Create)
+
+	categoryRepository := controller.NewCategoryRepository()
+	app.Get("/test", categoryRepository.Test)
 
 	return app
 }
