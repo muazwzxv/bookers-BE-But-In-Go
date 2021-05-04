@@ -41,6 +41,7 @@ func setupRouter() *fiber.App {
 
 	categoryRepository := controller.NewCategoryRepository()
 	app.Get("/test", categoryRepository.Test)
+	app.Get("/category", categoryRepository.Create)
 
 	return app
 }

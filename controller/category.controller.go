@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/muazwzxv/bookers/m/model"
 	"github.com/muazwzxv/bookers/m/service"
 	"gorm.io/gorm"
 )
@@ -21,11 +22,20 @@ func NewCategoryRepository() *CategoryRepository {
 
 func (categoryRepo *CategoryRepository) Create(ctx *fiber.Ctx) error {
 
+	var category model.Category
+
+	if err := ctx.BodyParser(&category); err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"Success": false,
+			"Message": "Cannot parse JSON",
+		})
+	}
+
 	// Response for created
 	return ctx.Status(http.StatusCreated).JSON(fiber.Map{
 		"Success":  true,
 		"Message":  "Category Created",
-		"Category": true,
+		"Category": category,
 	})
 }
 
