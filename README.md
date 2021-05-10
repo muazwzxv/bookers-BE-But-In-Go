@@ -10,3 +10,11 @@ I will be using this stack for this project
 - Mysql
 - Docker  
 
+
+### TLDR
+- The current docker image has problems when connecting to the database server ran locally outside the container
+- Current solution is include the network tag when spawning containers
+```bash
+$ docker run --network="host" --name $CONTAINER_NAME -d bookers-be
+```
+- No need to mapped port due to the network setting set to host
