@@ -13,16 +13,17 @@ ADD . .
 RUN go mod download
 
 # Build the application
-RUN go build -o main
+RUN go build -o main .
 
 # Move to /dist directory as the place for resulting binary folder
 WORKDIR /dist
 
 # Copy binary from build to main folder
 RUN cp /build/main .
+RUN cp /build/.env .
 
 # Exose port
-EXPOSE 3000
+EXPOSE 8000
 
 # Command to run when starting contrainer
 CMD ["/dist/main"]
