@@ -41,3 +41,22 @@ func (userRepo *UserRepository) Create(ctx *fiber.Ctx) error {
 		})
 	}
 }
+
+func (userRepo *UserRepository) login(ctx *fiber.Ctx) error {
+	var login model.Login
+	if err := ctx.BodyParser(&login); err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"Success": false,
+			"Message": "Cannot parse JSON",
+		})
+	}
+
+	// check if user exist or not
+	user, err := model.GetUser(userRepo.gorm, login.Email)
+	if err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"Success": false,
+			"Message": err,
+		})
+	}
+}
