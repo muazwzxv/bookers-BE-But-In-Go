@@ -79,9 +79,10 @@ func GetUser(db *gorm.DB, email string) (User, error) {
 
 func CheckEmailExist(db *gorm.DB, email string) bool {
 	var user User
-	if err := db.Debug().Where("email = ?", email).First(&user); err != nil {
-		return true
-	} else {
+
+	if res := db.Debug().Where("email = ?", email).First(&user); res != nil && res.RowsAffected == 0 {
 		return false
+	} else {
+		return true
 	}
 }

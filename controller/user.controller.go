@@ -29,13 +29,15 @@ func (userRepo *UserRepository) Create(ctx *fiber.Ctx) error {
 		})
 	}
 
-	if model.CheckEmailExist(userRepo.gorm, user.Email) == true {
+	// Check email exits
+	if cond := model.CheckEmailExist(userRepo.gorm, user.Email); cond == true {
 		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"Success": false,
 			"Message": "Email already exists",
 		})
 	}
 
+	// Hash password
 	if hashed, err := model.HashPassword(user.Password); err != nil {
 		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"Success": false,
@@ -60,7 +62,7 @@ func (userRepo *UserRepository) Create(ctx *fiber.Ctx) error {
 	}
 }
 
-func (userRepo *UserRepository) login(ctx *fiber.Ctx) error {
+func (userRepo *UserRepository) Login(ctx *fiber.Ctx) error {
 	// Parse request
 	var login model.Login
 	if err := ctx.BodyParser(&login); err != nil {

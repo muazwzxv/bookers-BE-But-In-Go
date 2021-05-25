@@ -11,8 +11,6 @@ import (
 )
 
 func main() {
-	//app := fiber.New()
-
 	// Connect Database
 	if _, err := service.DB.Connect(); err != nil {
 		log.Fatal("Error ", err)
@@ -22,8 +20,8 @@ func main() {
 	app.Use(logger.New())
 	app.Use(cors.New())
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+	app.Get("/", func(ctx *fiber.Ctx) error {
+		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 			"success": true,
 			"message": "You are at the endpoint",
 		})
@@ -39,6 +37,7 @@ func setupRouter() *fiber.App {
 	app := fiber.New()
 
 	userRepository := controller.NewUserRepository()
+	app.Post("/login", userRepository.Login)
 	app.Post("/users", userRepository.Create)
 
 	categoryRepository := controller.NewCategoryRepository()
