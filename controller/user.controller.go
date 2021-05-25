@@ -21,6 +21,7 @@ func NewUserRepository() *UserRepository {
 func (userRepo *UserRepository) Create(ctx *fiber.Ctx) error {
 	var user model.User
 
+	// Parse incoming request
 	if err := ctx.BodyParser(&user); err != nil {
 		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"Success": false,
@@ -28,6 +29,23 @@ func (userRepo *UserRepository) Create(ctx *fiber.Ctx) error {
 		})
 	}
 
+	if model.CheckEmailExist(userRepo.gorm, user.Email) == true {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"Success": false,
+			"Message": "Email already exists",
+		})
+	}
+
+	if hashed, err := model.HashPassword(user.Password); err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"Success": false,
+			"Message": "Failed to hash password",
+		})
+	} else {
+		user.Password = hashed
+	}
+
+	// Create the user
 	if err := model.CreateUser(userRepo.gorm, &user); err != nil {
 		return ctx.Status(http.StatusConflict).JSON(fiber.Map{
 			"Success": false,
