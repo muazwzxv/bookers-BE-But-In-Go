@@ -43,6 +43,7 @@ func (userRepo *UserRepository) Create(ctx *fiber.Ctx) error {
 }
 
 func (userRepo *UserRepository) login(ctx *fiber.Ctx) error {
+	// Parse request
 	var login model.Login
 	if err := ctx.BodyParser(&login); err != nil {
 		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
@@ -59,4 +60,26 @@ func (userRepo *UserRepository) login(ctx *fiber.Ctx) error {
 			"Message": err,
 		})
 	}
+
+	// Check password hash
+	if model.CheckPasswordHash(login.Password, user.Password) == false {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"Success": false,
+			"Message": "Password does not match",
+		})
+	}
+
+	// Generate jwt token
+	if token, err := model.CreateToken(uint(user.ID)); err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"Success": false,
+			"Message": err,
+		})
+	} else {
+		return ctx.Status(http.StatusOK).JSON(fiber.Map{
+			"Success": true,
+			"token":   token,
+		})
+	}
+
 }

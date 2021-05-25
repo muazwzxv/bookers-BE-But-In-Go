@@ -21,3 +21,7 @@ func readEnv(key string) string {
 
 	return value
 }
+
+func GetJWTSecret() string {
+	return readEnv("JWTSECRET")
+}

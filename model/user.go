@@ -3,6 +3,9 @@ package model
 import (
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
+	"github.com/muazwzxv/bookers/m/config"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -27,6 +30,37 @@ type Login struct {
 	Password string
 }
 
+// Hash wrapper functions
+func HashPassword(pass string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(pass), 14)
+	return string(bytes), err
+}
+func CheckPasswordHash(pass, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(pass))
+	return err == nil
+}
+
+// JWT wrapper function
+func CreateToken(id uint) (string, error) {
+	var err error
+
+	// Jwt secret
+	secret := config.GetJWTSecret()
+
+	// Create access token
+	claim := jwt.MapClaims{}
+	claim["authorized"] = true
+	claim["user_id"] = id
+	claim["exp"] = time.Now().Add(time.Minute * 30).Unix()
+
+	at := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
+
+	token, err := at.SignedString([]byte(secret))
+	return token, err
+
+}
+
+// Queries wrapper function
 func CreateUser(db *gorm.DB, user *User) error {
 	if err := db.Debug().Create(&user).Error; err != nil {
 		return err
