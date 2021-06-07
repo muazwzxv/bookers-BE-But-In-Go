@@ -7,7 +7,6 @@ import (
 )
 
 type Topic struct {
-	gorm.Model
 	ID   uint64 `gorm:"primary_key;auto_increment"`
 	Name string
 

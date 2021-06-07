@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/muazwzxv/bookers/m/config"
 	"github.com/muazwzxv/bookers/m/model"
 	"github.com/muazwzxv/bookers/m/service"
 	"gorm.io/gorm"
@@ -89,8 +90,14 @@ func (userRepo *UserRepository) Login(ctx *fiber.Ctx) error {
 		})
 	}
 
+	jwtWrapper := service.JwtWrapper{
+		SecretKey:    config.GetJWTSecret(),
+		Issuer:       "Auth Service",
+		ExpiredHours: 5,
+	}
+
 	// Generate jwt token
-	if token, err := model.CreateToken(uint(user.ID)); err != nil {
+	if token, err := jwtWrapper.GenerateToken(user.Email, uint64(user.ID)); err != nil {
 		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"Success": false,
 			"Message": err,
@@ -101,5 +108,18 @@ func (userRepo *UserRepository) Login(ctx *fiber.Ctx) error {
 			"token":   token,
 		})
 	}
+
+	// Generate jwt token
+	// if token, err := model.CreateToken(uint(user.ID)); err != nil {
+	// 	return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+	// 		"Success": false,
+	// 		"Message": err,
+	// 	})
+	// } else {
+	// 	return ctx.Status(http.StatusOK).JSON(fiber.Map{
+	// 		"Success": true,
+	// 		"token":   token,
+	// 	})
+	// }
 
 }
