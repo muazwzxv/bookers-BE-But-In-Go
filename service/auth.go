@@ -1,9 +1,12 @@
 package service
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/muazwzxv/bookers/m/config"
 )
 
 type JwtWrapper struct {
@@ -37,4 +40,23 @@ func (j *JwtWrapper) GenerateToken(email string, id uint64) (signed string, err 
 	return
 }
 
-// func (j *JwtWrapper) ValidateToken()
+func (j *JwtWrapper) VerifyToken(token string) error {
+	if token != "" {
+		return errors.New("token is null")
+	}
+
+	validate, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(config.GetJWTSecret()), nil
+	})
+	if err != nil {
+		return err
+	}
+
+	if _, ok := validate.Claims.(jwt.MapClaims); !ok && !validate.Valid {
+		return err
+	}
+	return nil
+}
