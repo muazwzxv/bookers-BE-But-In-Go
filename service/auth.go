@@ -37,4 +37,4 @@ func (j *JwtWrapper) GenerateToken(email string, id uint64) (signed string, err 
 	return
 }
 
-func (j *JwtWrapper) ValidateToken()
+// func (j *JwtWrapper) ValidateToken()

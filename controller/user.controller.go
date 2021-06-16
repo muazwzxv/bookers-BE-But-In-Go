@@ -83,7 +83,7 @@ func (userRepo *UserRepository) Login(ctx *fiber.Ctx) error {
 	}
 
 	// Check password hash
-	if model.CheckPasswordHash(login.Password, user.Password) == false {
+	if !model.CheckPasswordHash(login.Password, user.Password) {
 		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"Success": false,
 			"Message": "Password does not match",
@@ -121,5 +121,4 @@ func (userRepo *UserRepository) Login(ctx *fiber.Ctx) error {
 	// 		"token":   token,
 	// 	})
 	// }
-
 }

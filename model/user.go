@@ -1,10 +1,9 @@
 package model
 
 import (
+	"fmt"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
-	"github.com/muazwzxv/bookers/m/config"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -39,26 +38,6 @@ func CheckPasswordHash(pass, hash string) bool {
 	return err == nil
 }
 
-// JWT wrapper function
-func CreateToken(id uint) (string, error) {
-	var err error
-
-	// Jwt secret
-	secret := config.GetJWTSecret()
-
-	// Create access token
-	claim := jwt.MapClaims{}
-	claim["authorized"] = true
-	claim["user_id"] = id
-	claim["exp"] = time.Now().Add(time.Minute * 30).Unix()
-
-	at := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
-
-	token, err := at.SignedString([]byte(secret))
-	return token, err
-
-}
-
 // Queries wrapper function
 func CreateUser(db *gorm.DB, user *User) error {
 	if err := db.Debug().Create(&user).Error; err != nil {
@@ -69,7 +48,7 @@ func CreateUser(db *gorm.DB, user *User) error {
 
 func GetUser(db *gorm.DB, email string) (User, error) {
 	var user User
-	if err := db.Debug().Where("email = ?", email).First(&user); err != nil {
+	if err := db.Where("email = ?", email).First(&user); err != nil {
 		return user, nil
 	} else {
 		return User{}, err.Error
@@ -82,6 +61,7 @@ func CheckEmailExist(db *gorm.DB, email string) bool {
 	if res := db.Debug().Where("email = ?", email).First(&user); res != nil && res.RowsAffected == 0 {
 		return false
 	} else {
+		fmt.Println(res.Error)
 		return true
 	}
 }
